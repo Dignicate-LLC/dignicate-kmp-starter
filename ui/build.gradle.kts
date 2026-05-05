@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.composeCompiler)
 }
@@ -18,7 +18,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "Ui"
             isStatic = true
         }
     }
@@ -26,17 +26,16 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
+            implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(compose.materialIconsExtended)
+            implementation(project(":viewmodel"))
             implementation(project(":core"))
-            implementation(project(":ui"))
-            implementation(project(":providers"))
         }
-
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
         }
-
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
@@ -44,20 +43,15 @@ kotlin {
 }
 
 android {
-    namespace = "com.dignicate.kmpstarter"
+    namespace = "com.dignicate.kmpstarter.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.dignicate.kmpstarter"
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = libs.versions.app.version.get()
     }
 
     buildFeatures {
         compose = true
-        buildConfig = true
     }
 
     compileOptions {
