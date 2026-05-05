@@ -18,3 +18,10 @@ class TimeRepositoryImpl(private val apiClient: TimeApiClient) : TimeRepository 
         awaitClose { apiClient.close() }
     }
 }
+
+private fun TimeDto.toDomainObject(): TimeInfo = TimeInfo(
+    utc = utc,
+    millis = millis,
+    unixSeconds = unixSeconds,
+    iso8601 = iso8601,
+)
