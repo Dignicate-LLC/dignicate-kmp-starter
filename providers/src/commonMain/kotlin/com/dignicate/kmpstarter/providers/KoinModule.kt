@@ -7,6 +7,7 @@ import com.dignicate.kmpstarter.data.TimeRepositoryImpl
 import com.dignicate.kmpstarter.domain.GetGreetingUseCase
 import com.dignicate.kmpstarter.domain.GreetingRepository
 import com.dignicate.kmpstarter.domain.TimeRepository
+import com.dignicate.kmpstarter.domain.TimeUseCase
 import com.dignicate.kmpstarter.viewmodel.GreetingViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -30,6 +31,7 @@ private val dataModule = module {
 
 private val domainModule = module {
     factory { GetGreetingUseCase(get()) }
+    factory { TimeUseCase(get()) }
 }
 
 private val viewModelModule = module {
