@@ -8,6 +8,8 @@ import com.dignicate.kmpstarter.ui.screens.LaunchScreen
 import com.dignicate.kmpstarter.ui.screens.SettingsScreen
 import com.dignicate.kmpstarter.core.CommonBackHandler
 import com.dignicate.kmpstarter.core.getAppVersion
+import com.dignicate.kmpstarter.viewmodel.HomeViewModel
+import org.koin.mp.KoinPlatform
 
 enum class Screen {
     Launch, Home, Settings
@@ -16,6 +18,7 @@ enum class Screen {
 @Composable
 fun App() {
     val appVersion = remember { getAppVersion() }
+    val homeViewModel = remember { KoinPlatform.getKoin().get<HomeViewModel>() }
     var currentScreen by remember { mutableStateOf(Screen.Launch) }
     var selectedTab by remember { mutableStateOf(MainTab.HOME) }
 
@@ -35,7 +38,8 @@ fun App() {
                 selectedTab = selectedTab,
                 onTabSelected = { selectedTab = it },
                 version = appVersion,
-                onOpenSettings = { currentScreen = Screen.Settings }
+                onOpenSettings = { currentScreen = Screen.Settings },
+                homeViewModel = homeViewModel,
             )
             Screen.Settings -> SettingsScreen(
                 onBack = { currentScreen = Screen.Home }

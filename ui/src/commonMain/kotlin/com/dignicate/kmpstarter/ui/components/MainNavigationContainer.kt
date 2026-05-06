@@ -28,6 +28,7 @@ import com.dignicate.kmpstarter.ui.screens.CatalogTabScreen
 import com.dignicate.kmpstarter.ui.screens.HomeTabScreen
 import com.dignicate.kmpstarter.ui.screens.MenuTabScreen
 import com.dignicate.kmpstarter.ui.screens.SavedTabScreen
+import com.dignicate.kmpstarter.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -35,7 +36,8 @@ fun MainNavigationContainer(
     selectedTab: MainTab,
     onTabSelected: (MainTab) -> Unit,
     version: String,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    homeViewModel: HomeViewModel,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -94,7 +96,7 @@ fun MainNavigationContainer(
             Box(modifier = Modifier.padding(paddingValues)) {
                 saveableStateHolder.SaveableStateProvider(selectedTab) {
                     when (selectedTab) {
-                        MainTab.HOME -> HomeTabScreen()
+                        MainTab.HOME -> HomeTabScreen(homeViewModel)
                         MainTab.CATALOG -> CatalogTabScreen()
                         MainTab.SAVED -> SavedTabScreen()
                         MainTab.MENU -> MenuTabScreen()
