@@ -31,6 +31,8 @@ kotlin {
             implementation(project(":core"))
             implementation(project(":ui"))
             implementation(project(":providers"))
+            implementation(project(":viewmodel"))
+            implementation(libs.koin.core)
         }
 
         androidMain.dependencies {
