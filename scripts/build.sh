@@ -262,31 +262,9 @@ case "$build_input" in
       exit 1
     fi
 
-    if [ "$selected_type" == "android" ]; then
-      CMD="./gradlew :composeApp:installDebug ${GRADLE_ARGS[*]}"
-    elif [ "$selected_type" == "ios-sim" ]; then
-      CMD="xcodebuild -project iosApp/kmpstarter/kmpstarter.xcodeproj -scheme kmpstarter -configuration Debug -sdk iphonesimulator -destination \"id=$selected_id\" build"
-    fi
-
     echo
-    echo "Ready to deploy to: $selected_info"
-    echo "Command: $CMD"
+    echo "Deploying to: $selected_info"
     echo
-    read -rp "Run directly or copy to clipboard? [c/r] (default: r): " action
-    action=${action:-r}
-
-    if [ "$action" = "c" ]; then
-      if command -v pbcopy &> /dev/null; then
-        printf "%s" "$CMD" | pbcopy
-        echo "Command copied to clipboard."
-      else
-        echo "pbcopy not found. Command:"
-        echo "$CMD"
-      fi
-      exit 0
-    else
-      echo "Executing: $CMD"
-    fi
 
     if [ "$selected_type" == "android" ]; then
       ./gradlew :composeApp:installDebug "${GRADLE_ARGS[@]}"
