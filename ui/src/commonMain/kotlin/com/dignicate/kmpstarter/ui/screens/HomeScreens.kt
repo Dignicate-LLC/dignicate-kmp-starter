@@ -1,6 +1,5 @@
 package com.dignicate.kmpstarter.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,51 +29,81 @@ fun HomeTabScreen(viewModel: HomeViewModel) {
         viewModel.onAppear()
     }
 
-    val showLoading = viewState.isLoading ||
-        (viewState.currentTime == null && viewState.errorMessage == null)
+    val isRefreshing = viewState.isLoading && viewState.currentTime != null
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text("Welcome", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(32.dp))
+    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text("Welcome", style = MaterialTheme.typography.headlineMedium)
+        }
 
-        when {
-            showLoading -> CircularProgressIndicator()
-            viewState.currentTime != null -> {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Current Time", style = MaterialTheme.typography.labelMedium)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = viewState.currentTime!!,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center),
+            contentAlignment = Alignment.Center,
+        ) {
+            when {
+                viewState.currentTime != null -> {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Card(modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text("Current Time", style = MaterialTheme.typography.labelMedium)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = viewState.currentTime!!,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = { viewModel.onRefresh() }) {
+                            Text("Refresh")
+                        }
+
+                        if (viewState.errorMessage != null) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = viewState.errorMessage!!,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
+
+                    if (isRefreshing) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { viewModel.onRefresh() }) {
-                    Text("Refresh")
+
+                viewState.errorMessage != null -> {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Failed to load",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = viewState.errorMessage!!,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = { viewModel.onRefresh() }) {
+                            Text("Retry")
+                        }
+                    }
                 }
-            }
-            viewState.errorMessage != null -> {
-                Text(
-                    text = "Failed to load",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = viewState.errorMessage!!,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { viewModel.onRefresh() }) {
-                    Text("Retry")
-                }
+
+                else -> CircularProgressIndicator()
             }
         }
     }

@@ -25,14 +25,19 @@ class HomeViewModel(
     init {
         viewModelScope.launch {
             timeUseCase.data.collect { resource ->
+                val currentState = _viewState.value
                 _viewState.value = when (resource) {
                     is Resource.Initialized -> ViewState()
-                    is Resource.InProgress -> ViewState(isLoading = true)
+                    is Resource.InProgress -> currentState.copy(
+                        isLoading = true,
+                        errorMessage = null,
+                    )
                     is Resource.Success -> ViewState(currentTime = resource.data.iso8601)
-                    is Resource.Failure -> ViewState(
+                    is Resource.Failure -> currentState.copy(
+                        isLoading = false,
                         errorMessage = when (val error = resource.error) {
                             is Error.Unknown -> error.throwable.message ?: "Unknown error"
-                        }
+                        },
                     )
                 }
             }
