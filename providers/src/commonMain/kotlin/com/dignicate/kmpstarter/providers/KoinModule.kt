@@ -16,8 +16,8 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 
-private val coreModule = module {
-    single { AppConfig.load() }
+private fun coreModule(appConfig: AppConfig) = module {
+    single { appConfig }
 }
 
 private val dataModule = module {
@@ -41,19 +41,17 @@ private val viewModelModule = module {
     viewModel { DebugMenuViewModel(get()) }
 }
 
-val appModules = listOf(
-    coreModule,
-    dataModule,
-    domainModule,
-    viewModelModule
-)
-
-fun initKoin() {
+fun initKoin(appConfig: AppConfig) {
     if (KoinPlatform.getKoinOrNull() != null) {
         return
     }
 
     startKoin {
-        modules(appModules)
+        modules(
+            coreModule(appConfig),
+            dataModule,
+            domainModule,
+            viewModelModule,
+        )
     }
 }
