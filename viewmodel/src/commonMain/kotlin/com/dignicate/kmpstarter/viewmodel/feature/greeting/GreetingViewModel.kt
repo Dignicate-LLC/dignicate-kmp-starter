@@ -1,4 +1,4 @@
-package com.dignicate.kmpstarter.viewmodel
+package com.dignicate.kmpstarter.viewmodel.feature.greeting
 
 import com.dignicate.kmpstarter.domain.GetGreetingUseCase
 

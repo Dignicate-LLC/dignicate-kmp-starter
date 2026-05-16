@@ -8,8 +8,8 @@ import com.dignicate.kmpstarter.domain.GetGreetingUseCase
 import com.dignicate.kmpstarter.domain.GreetingRepository
 import com.dignicate.kmpstarter.domain.TimeRepository
 import com.dignicate.kmpstarter.domain.TimeUseCase
-import com.dignicate.kmpstarter.viewmodel.GreetingViewModel
-import com.dignicate.kmpstarter.viewmodel.HomeViewModel
+import com.dignicate.kmpstarter.viewmodel.feature.greeting.GreetingViewModel
+import com.dignicate.kmpstarter.viewmodel.feature.home.HomeViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json

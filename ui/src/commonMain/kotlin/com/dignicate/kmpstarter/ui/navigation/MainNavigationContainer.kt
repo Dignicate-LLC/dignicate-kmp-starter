@@ -29,7 +29,7 @@ import com.dignicate.kmpstarter.ui.feature.catalog.CatalogTabScreen
 import com.dignicate.kmpstarter.ui.feature.home.HomeTabScreen
 import com.dignicate.kmpstarter.ui.feature.menu.MenuTabScreen
 import com.dignicate.kmpstarter.ui.feature.saved.SavedTabScreen
-import com.dignicate.kmpstarter.viewmodel.HomeViewModel
+import com.dignicate.kmpstarter.viewmodel.feature.home.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable

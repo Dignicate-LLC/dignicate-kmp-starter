@@ -1,4 +1,4 @@
-package com.dignicate.kmpstarter.viewmodel
+package com.dignicate.kmpstarter.viewmodel.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

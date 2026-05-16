@@ -8,7 +8,7 @@ import com.dignicate.kmpstarter.ui.navigation.MainNavigationContainer
 import com.dignicate.kmpstarter.ui.navigation.MainTab
 import com.dignicate.kmpstarter.core.CommonBackHandler
 import com.dignicate.kmpstarter.core.getAppVersion
-import com.dignicate.kmpstarter.viewmodel.HomeViewModel
+import com.dignicate.kmpstarter.viewmodel.feature.home.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 enum class Screen {
