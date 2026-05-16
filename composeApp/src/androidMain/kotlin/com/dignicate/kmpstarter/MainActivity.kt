@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         val pkgInfo = packageManager.getPackageInfo(packageName, 0)
         return AppConfig(
             version = pkgInfo.versionName ?: "0.0.0",
-            env = AppEnvironment.UNKNOWN,
+            env = AppEnvironment.fromName(BuildConfig.APP_ENV),
             packageName = packageName,
             isDebug = BuildConfig.DEBUG,
         )
