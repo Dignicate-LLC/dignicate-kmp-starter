@@ -48,7 +48,15 @@ fun HomeScreen(
             modifier = Modifier.align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Welcome", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "Dignicate, KMP Starter",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Our standard Kotlin Multiplatform starter template.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
 
         Box(
