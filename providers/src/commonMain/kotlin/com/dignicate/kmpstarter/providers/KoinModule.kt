@@ -12,7 +12,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 
@@ -37,8 +36,8 @@ private val domainModule = module {
 }
 
 private val viewModelModule = module {
-    viewModel { HomeViewModel(get()) }
-    viewModel { DebugMenuViewModel(get()) }
+    factory { HomeViewModel(get()) }
+    factory { DebugMenuViewModel(get()) }
 }
 
 fun initKoin(appConfig: AppConfig) {
