@@ -34,7 +34,7 @@ kotlin {
             implementation(project(":viewmodel"))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.koin.compose.viewmodel)
         }
 
         androidMain.dependencies {

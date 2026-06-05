@@ -12,6 +12,7 @@ import com.dignicate.kmpstarter.ui.navigation.MainTab
 import com.dignicate.kmpstarter.viewmodel.feature.debug.DebugMenuViewModel
 import com.dignicate.kmpstarter.viewmodel.feature.home.HomeViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 enum class Screen {
     Launch, Home, Settings, DebugMenu
@@ -20,8 +21,8 @@ enum class Screen {
 @Composable
 fun App() {
     val appConfig: AppConfig = koinInject()
-    val homeViewModel: HomeViewModel = koinInject()
-    val debugMenuViewModel: DebugMenuViewModel = koinInject()
+    val homeViewModel: HomeViewModel = koinViewModel()
+    val debugMenuViewModel: DebugMenuViewModel = koinViewModel()
     var currentScreen by remember { mutableStateOf(Screen.Launch) }
     var selectedTab by remember { mutableStateOf(MainTab.HOME) }
 
