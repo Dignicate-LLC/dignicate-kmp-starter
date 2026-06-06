@@ -322,10 +322,22 @@ case "$build_input" in
       fi
       APP_FULL_PATH="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
 
-      echo "Installing on simulator..."
-      xcrun simctl install "$selected_id" "$APP_FULL_PATH"
+      echo "Installing on simulator ($selected_id)..."
+      echo "  Path: $APP_FULL_PATH"
+      if ! xcrun simctl install "$selected_id" "$APP_FULL_PATH"; then
+        echo "[!] Error: Failed to install app on simulator."
+        echo "    UDID: $selected_id"
+        echo "    Path: $APP_FULL_PATH"
+        exit 1
+      fi
+
       echo "Launching ${APP_ID}..."
-      xcrun simctl launch "$selected_id" "$APP_ID"
+      if ! xcrun simctl launch "$selected_id" "$APP_ID"; then
+        echo "[!] Error: Failed to launch app on simulator."
+        echo "    UDID: $selected_id"
+        echo "    AppID: $APP_ID"
+        exit 1
+      fi
 
       echo "Tailing simulator logs (Ctrl+C to stop)..."
       xcrun simctl spawn "$selected_id" log stream --level debug --predicate 'process == "kmpstarter"'
