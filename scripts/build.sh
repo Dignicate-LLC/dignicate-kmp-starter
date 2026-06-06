@@ -294,12 +294,11 @@ case "$build_input" in
       fi
     elif [ "$selected_type" == "ios-sim" ]; then
       # --- 追加: シミュレータの起動チェック ---
-      STATE=$(xcrun simctl list devices | grep "$selected_id" | grep -o "(Booted)")
-      if [ "$STATE" != "(Booted)" ]; then
+      if xcrun simctl list devices | grep -q "$selected_id.*(Booted)"; then
+        echo "Simulator ($selected_id) is already booted."
+      else
         echo "Booting simulator ($selected_id)..."
         xcrun simctl boot "$selected_id"
-      else
-        echo "Simulator ($selected_id) is already booted."
       fi
       # -----------------------------------
 
