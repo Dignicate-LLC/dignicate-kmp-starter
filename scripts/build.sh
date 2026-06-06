@@ -313,11 +313,17 @@ case "$build_input" in
                  build
 
       APP_SETTINGS=$(xcodebuild -project iosApp/kmpstarter/kmpstarter.xcodeproj -scheme "$IOS_SCHEME" -configuration "$IOS_CONFIG" -sdk iphonesimulator -destination "id=$selected_id" -showBuildSettings)
-      APP_PATH=$(echo "$APP_SETTINGS" | grep -m 1 "BUILT_PRODUCTS_DIR" | awk '{print $3}')
-      APP_NAME=$(echo "$APP_SETTINGS" | grep -m 1 "EXECUTABLE_FOLDER_PATH" | awk '{print $3}')
+      TARGET_BUILD_DIR=$(echo "$APP_SETTINGS" | grep -m 1 "TARGET_BUILD_DIR" | cut -d'=' -f2 | xargs)
+      FULL_PRODUCT_NAME=$(echo "$APP_SETTINGS" | grep -m 1 "FULL_PRODUCT_NAME" | cut -d'=' -f2 | xargs)
+
+      if [ -z "$TARGET_BUILD_DIR" ] || [ -z "$FULL_PRODUCT_NAME" ]; then
+        echo "[!] Error: Failed to extract build settings (TARGET_BUILD_DIR or FULL_PRODUCT_NAME)."
+        exit 1
+      fi
+      APP_FULL_PATH="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
 
       echo "Installing on simulator..."
-      xcrun simctl install "$selected_id" "$APP_PATH/$APP_NAME"
+      xcrun simctl install "$selected_id" "$APP_FULL_PATH"
       echo "Launching ${APP_ID}..."
       xcrun simctl launch "$selected_id" "$APP_ID"
 
