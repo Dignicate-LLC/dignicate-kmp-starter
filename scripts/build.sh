@@ -299,6 +299,7 @@ case "$build_input" in
       else
         echo "Booting simulator ($selected_id)..."
         xcrun simctl boot "$selected_id"
+        xcrun simctl bootstatus "$selected_id" -b
       fi
       # -----------------------------------
 
@@ -311,7 +312,7 @@ case "$build_input" in
                  -destination "id=$selected_id" \
                  build
 
-      APP_SETTINGS=$(xcodebuild -project iosApp/kmpstarter/kmpstarter.xcodeproj -scheme "$IOS_SCHEME" -configuration "$IOS_CONFIG" -sdk iphonesimulator -showBuildSettings)
+      APP_SETTINGS=$(xcodebuild -project iosApp/kmpstarter/kmpstarter.xcodeproj -scheme "$IOS_SCHEME" -configuration "$IOS_CONFIG" -sdk iphonesimulator -destination "id=$selected_id" -showBuildSettings)
       APP_PATH=$(echo "$APP_SETTINGS" | grep -m 1 "BUILT_PRODUCTS_DIR" | awk '{print $3}')
       APP_NAME=$(echo "$APP_SETTINGS" | grep -m 1 "EXECUTABLE_FOLDER_PATH" | awk '{print $3}')
 
