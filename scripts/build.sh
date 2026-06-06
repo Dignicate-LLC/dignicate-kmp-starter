@@ -293,6 +293,16 @@ case "$build_input" in
         adb -s "$selected_id" logcat -v time
       fi
     elif [ "$selected_type" == "ios-sim" ]; then
+      # --- 追加: シミュレータの起動チェック ---
+      if xcrun simctl list devices | grep -q "$selected_id.*(Booted)"; then
+        echo "Simulator ($selected_id) is already booted."
+      else
+        echo "Booting simulator ($selected_id)..."
+        xcrun simctl boot "$selected_id"
+        xcrun simctl bootstatus "$selected_id" -b
+      fi
+      # -----------------------------------
+
       IOS_CONFIG="Debug-${ENV_CAP}"
       echo "Building for iOS Simulator (${IOS_SCHEME} / ${IOS_CONFIG} on ${selected_id})..."
       xcodebuild -project iosApp/kmpstarter/kmpstarter.xcodeproj \
@@ -302,14 +312,32 @@ case "$build_input" in
                  -destination "id=$selected_id" \
                  build
 
-      APP_SETTINGS=$(xcodebuild -project iosApp/kmpstarter/kmpstarter.xcodeproj -scheme "$IOS_SCHEME" -configuration "$IOS_CONFIG" -sdk iphonesimulator -showBuildSettings)
-      APP_PATH=$(echo "$APP_SETTINGS" | grep -m 1 "BUILT_PRODUCTS_DIR" | awk '{print $3}')
-      APP_NAME=$(echo "$APP_SETTINGS" | grep -m 1 "EXECUTABLE_FOLDER_PATH" | awk '{print $3}')
+      APP_SETTINGS=$(xcodebuild -project iosApp/kmpstarter/kmpstarter.xcodeproj -scheme "$IOS_SCHEME" -configuration "$IOS_CONFIG" -sdk iphonesimulator -destination "id=$selected_id" -showBuildSettings)
+      TARGET_BUILD_DIR=$(echo "$APP_SETTINGS" | grep -m 1 "TARGET_BUILD_DIR" | cut -d'=' -f2 | xargs)
+      FULL_PRODUCT_NAME=$(echo "$APP_SETTINGS" | grep -m 1 "FULL_PRODUCT_NAME" | cut -d'=' -f2 | xargs)
 
-      echo "Installing on simulator..."
-      xcrun simctl install "$selected_id" "$APP_PATH/$APP_NAME"
+      if [ -z "$TARGET_BUILD_DIR" ] || [ -z "$FULL_PRODUCT_NAME" ]; then
+        echo "[!] Error: Failed to extract build settings (TARGET_BUILD_DIR or FULL_PRODUCT_NAME)."
+        exit 1
+      fi
+      APP_FULL_PATH="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
+
+      echo "Installing on simulator ($selected_id)..."
+      echo "  Path: $APP_FULL_PATH"
+      if ! xcrun simctl install "$selected_id" "$APP_FULL_PATH"; then
+        echo "[!] Error: Failed to install app on simulator."
+        echo "    UDID: $selected_id"
+        echo "    Path: $APP_FULL_PATH"
+        exit 1
+      fi
+
       echo "Launching ${APP_ID}..."
-      xcrun simctl launch "$selected_id" "$APP_ID"
+      if ! xcrun simctl launch "$selected_id" "$APP_ID"; then
+        echo "[!] Error: Failed to launch app on simulator."
+        echo "    UDID: $selected_id"
+        echo "    AppID: $APP_ID"
+        exit 1
+      fi
 
       echo "Tailing simulator logs (Ctrl+C to stop)..."
       xcrun simctl spawn "$selected_id" log stream --level debug --predicate 'process == "kmpstarter"'
