@@ -13,7 +13,7 @@ class TimeApiClientImpl(
     override suspend fun getTime(): TimeDto {
         logger.log("[TimeApiClient] GET /time start")
         val response = httpClient
-            .get("https://freeapi.dignicate.com/time/v1/current")
+            .get("time/v1/current")
             .body<TimeDto>()
         logger.log("[TimeApiClient] GET /time done")
         return response
