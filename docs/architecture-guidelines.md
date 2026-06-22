@@ -126,7 +126,14 @@ All bindings are declared in `providers/src/commonMain/.../KoinModule.kt`. New c
 - Use Cases — `factory { UseCase(get()) }`
 - ViewModels — `factory { ViewModel(get()) }`
 
-## 6. Technology Stack
+## 6. Logging
+
+- `Logger` is provided from `:providers` as `single<Logger> { platformNetworkLogger }`.
+- `platformNetworkLogger` is implemented with `expect/actual`: Android delegates to `Log.d`, iOS delegates to `NSLog`.
+- The same `Logger` instance is used by both the `HttpClient` `Logging` plugin and application classes such as `TimeApiClientImpl` / `TimeRepositoryImpl`.
+- `commonMain` code must not call platform logging APIs directly.
+
+## 7. Technology Stack
 
 | Concern | Library |
 |---|---|
@@ -136,7 +143,7 @@ All bindings are declared in `providers/src/commonMain/.../KoinModule.kt`. New c
 | Dependency injection | Koin 4 |
 | UI | Compose Multiplatform |
 
-## 7. Package Structure (Feature-Oriented)
+## 8. Package Structure (Feature-Oriented)
 
 Within the `:ui` and `:viewmodel` modules, screen-level code is organized by **feature**, not by layer. Cross-cutting concerns live in dedicated sibling packages.
 
