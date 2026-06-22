@@ -1,0 +1,2 @@
+env: "stg"
+apiBaseUrl: "https://freeapi.dignicate.com"
