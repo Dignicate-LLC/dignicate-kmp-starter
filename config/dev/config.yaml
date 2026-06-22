@@ -1,0 +1,2 @@
+env: "dev"
+apiBaseUrl: "https://api.example.com"

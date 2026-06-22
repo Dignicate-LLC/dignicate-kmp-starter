@@ -1,6 +1,8 @@
 package com.dignicate.kmpstarter.providers
 
 import com.dignicate.kmpstarter.core.AppConfig
+import com.dignicate.kmpstarter.core.PlatformInfo
+import com.dignicate.kmpstarter.core.buildAppConfig
 import com.dignicate.kmpstarter.data.TimeApiClient
 import com.dignicate.kmpstarter.data.TimeApiClientImpl
 import com.dignicate.kmpstarter.data.TimeRepositoryImpl
@@ -9,6 +11,7 @@ import com.dignicate.kmpstarter.domain.TimeUseCase
 import com.dignicate.kmpstarter.viewmodel.feature.debug.DebugMenuViewModel
 import com.dignicate.kmpstarter.viewmodel.feature.home.HomeViewModel
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -26,8 +29,12 @@ private val dataModule = module {
     single<Logger> { platformNetworkLogger }
 
     single {
+        val appConfig = get<AppConfig>()
         val networkLogger = get<Logger>()
         HttpClient {
+            defaultRequest {
+                url(appConfig.apiBaseUrl)
+            }
             install(ContentNegotiation) {
                 json()
             }
@@ -63,4 +70,9 @@ fun initKoin(appConfig: AppConfig) {
             viewModelModule,
         )
     }
+}
+
+fun startApplication(platformInfo: PlatformInfo) {
+    val appConfig = buildAppConfig(platformInfo)
+    initKoin(appConfig)
 }

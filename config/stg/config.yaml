@@ -1,0 +1,2 @@
+env: "stg"
+apiBaseUrl: "https://api.example.com"
