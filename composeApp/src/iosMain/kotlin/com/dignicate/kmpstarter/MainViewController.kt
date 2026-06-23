@@ -3,11 +3,13 @@ package com.dignicate.kmpstarter
 import androidx.compose.ui.window.ComposeUIViewController
 import com.dignicate.kmpstarter.core.PlatformInfo
 import com.dignicate.kmpstarter.providers.startApplication
+import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.Platform
 import platform.Foundation.NSBundle
 import platform.UIKit.UIViewController
 
 class MainViewControllerFactory {
+    @OptIn(ExperimentalNativeApi::class)
     fun make(): UIViewController {
         val bundle = NSBundle.mainBundle
         val info = bundle.infoDictionary
