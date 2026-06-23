@@ -1,5 +1,8 @@
 package com.dignicate.kmpstarter.core
 
+import dignicate_kmp_starter.core.generated.resources.Res
+import kotlinx.coroutines.runBlocking
+
 data class RuntimeConfig(
     val env: String,
     val apiBaseUrl: String,
@@ -35,10 +38,15 @@ object RuntimeConfigLoader {
     }
 }
 
-expect fun loadRuntimeConfigYaml(): String?
+fun loadRuntimeConfigYaml(): String? = runBlocking {
+    runCatching {
+        val bytes = Res.readBytes("files/config.yaml")
+        bytes.decodeToString()
+    }.getOrNull()
+}
 
 fun loadRuntimeConfig(): RuntimeConfig {
     val yaml = loadRuntimeConfigYaml()
-        ?: error("runtime/config.yaml not found in app bundle. Check the build-time copy task.")
+        ?: error("files/config.yaml not found in Compose Resources. Check build-time generation task.")
     return RuntimeConfigLoader.fromYaml(yaml)
 }
