@@ -5,8 +5,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
-val runtimeConfigRoot = rootProject.layout.projectDirectory.dir("config")
-
 kotlin {
     androidTarget {
         compilerOptions {
@@ -81,10 +79,6 @@ android {
         }
     }
 
-    sourceSets["dev"].assets.srcDir(layout.buildDirectory.dir("generated/runtimeConfig/dev"))
-    sourceSets["stg"].assets.srcDir(layout.buildDirectory.dir("generated/runtimeConfig/stg"))
-    sourceSets["prod"].assets.srcDir(layout.buildDirectory.dir("generated/runtimeConfig/prod"))
-
     buildFeatures {
         compose = true
         buildConfig = true
@@ -93,31 +87,5 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
-val copyRuntimeConfigDev = tasks.register<org.gradle.api.tasks.Copy>("copyRuntimeConfigDev") {
-    from(runtimeConfigRoot.file("dev/config.yaml"))
-    into(layout.buildDirectory.dir("generated/runtimeConfig/dev/runtime"))
-    rename { "config.yaml" }
-}
-
-val copyRuntimeConfigStg = tasks.register<org.gradle.api.tasks.Copy>("copyRuntimeConfigStg") {
-    from(runtimeConfigRoot.file("stg/config.yaml"))
-    into(layout.buildDirectory.dir("generated/runtimeConfig/stg/runtime"))
-    rename { "config.yaml" }
-}
-
-val copyRuntimeConfigProd = tasks.register<org.gradle.api.tasks.Copy>("copyRuntimeConfigProd") {
-    from(runtimeConfigRoot.file("prod/config.yaml"))
-    into(layout.buildDirectory.dir("generated/runtimeConfig/prod/runtime"))
-    rename { "config.yaml" }
-}
-
-tasks.configureEach {
-    when {
-        name.startsWith("preDev") && name.endsWith("Build") -> dependsOn(copyRuntimeConfigDev)
-        name.startsWith("preStg") && name.endsWith("Build") -> dependsOn(copyRuntimeConfigStg)
-        name.startsWith("preProd") && name.endsWith("Build") -> dependsOn(copyRuntimeConfigProd)
     }
 }

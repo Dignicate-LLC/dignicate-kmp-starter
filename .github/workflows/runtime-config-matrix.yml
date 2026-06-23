@@ -1,0 +1,63 @@
+name: runtime-config-matrix
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  core-build-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        appEnv: [dev, stg, prod]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build core with selected env
+        run: ./gradlew :core:assemble -PappEnv=${{ matrix.appEnv }}
+
+      - name: Verify generated runtime config exists
+        run: test -f core/build/generated/runtimeConfig/composeResources/files/config.yaml
+
+  core-build-invalid-env:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Verify invalid env fails
+        run: |
+          set +e
+          ./gradlew :core:assemble -PappEnv=qa
+          EXIT_CODE=$?
+          set -e
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "Expected build to fail for invalid appEnv=qa"
+            exit 1
+          fi
